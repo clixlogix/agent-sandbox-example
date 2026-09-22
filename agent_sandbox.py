@@ -1,12 +1,7 @@
 """
 Illustrative managed E2B sandbox harness.
 
-Reference implementation for the Clixlogix Seven Ring Sandbox Model.
-See the accompanying knowledge base entry at
-clixlogix.com/ai-agent-sandbox-production-security.
-
-STATUS: Reference draft, requires validation by Clixlogix engineering
-before publication to github.com/clixlogix/agent-sandbox-example.
+Reference implementation of the seven ring sandbox model.
 
 Ring 1 comes from the microVM. Ring 2 comes from the network config
 passed to Sandbox.create(). Ring 3 comes from template.py, which runs the
@@ -16,9 +11,10 @@ not own. The path guard below is defense in depth for the harness
 dispatcher. It does not reach inside arbitrary Python running in the
 sandbox. Ring 4, 5, 6, 7 live here.
 
-Pinned to e2b==2.37.1. Helper classes stubbed inline. A production build
-extracts them into an internal package, sends audit events to a durable
-append only store, and wires the broker into IAM.
+Pinned to e2b==2.37.1. The broker, the approval queue and the audit sink
+are working implementations in their own modules. Two seams are meant to
+be replaced before production: the secret store behind SecretBackend, and
+the audit destination. See the README.
 
 Dependencies:
     pip install e2b==2.37.1 pyyaml

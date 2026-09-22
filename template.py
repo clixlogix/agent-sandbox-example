@@ -5,10 +5,10 @@ E2B template definition. This is the Ring 3 boundary for the harness in
 agent_sandbox.py. Everything the article attributes to "the template"
 is enforced here, at the OS level, before any agent code runs.
 
-STATUS: Built and verified against E2B's live API. verify_ring3.py
-reports 21 of 21 controls holding inside a sandbox opened from this
-template. E2B's default user was confirmed to hold passwordless sudo,
-which is the reason the agent account below exists.
+Verified against E2B's live API: verify_ring3.py reports 21 of 21
+controls holding inside a sandbox opened from this template. E2B's
+default user was confirmed to hold passwordless sudo, which is the
+reason the agent account below exists.
 
 One control this template cannot enforce on its own. E2B runs its own
 configuration script AFTER these layers, and that script makes /usr/local
@@ -48,7 +48,7 @@ E2B runs every command through `bash -l -c`, which sources login files.
 A writable ~/.bashrc is a persistence vector: the agent writes it once
 and every later command in the session executes that code. Root owns the
 home directory and its dotfiles, so the agent reads them and nothing more.
-This is the "no writes to agent config files" control from Section 3.3.
+This is the "no writes to agent config files" control of Ring 3.
 
 Why reference material sits outside /workspace
 ----------------------------------------------

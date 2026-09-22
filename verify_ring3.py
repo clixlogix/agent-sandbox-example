@@ -4,7 +4,8 @@ Ring 3 verification for the company-agent-python-hardened template.
 Opens a sandbox from the built template and probes the file system
 boundary from inside it, as the agent account, the same way a compromised
 agent would. Every check asserts an OS level outcome. None of them ask
-the model to cooperate, which is the Testability property from Section 2.
+the model to cooperate. A sandbox whose controls can only be checked by
+asking the agent nicely is not a sandbox.
 
 Run after building template.py and before publishing:
     E2B_API_KEY=... python verify_ring3.py
