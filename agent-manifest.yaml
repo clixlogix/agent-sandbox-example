@@ -1,0 +1,89 @@
+# agent-manifest.yaml
+#
+# Declares what one agent instance is allowed to do.
+# Reference implementation for the Clixlogix Seven Ring Sandbox Model.
+#
+# Structure:
+#   version                       Manifest schema version.
+#   agent_id                      Stable per-agent identifier used for
+#                                 audit correlation.
+#   sandbox.template              Custom E2B template. Its definition ships
+#                                 alongside this manifest and the harness.
+#                                 The template enforces Ring 3 through
+#                                 unprivileged OS user, mount layout, and
+#                                 blocked sensitive paths.
+#   sandbox.max_runtime_seconds   Hard timeout for the sandbox lifetime.
+#   sandbox.tool_timeout_seconds  Per command timeout inside the sandbox.
+#                                 The SDK default is 60 seconds and does
+#                                 not inherit the sandbox lifetime.
+#   sandbox.allowed_domains       Ring 2 hostname allowlist passed to
+#                                 Sandbox.create(network=...).
+#   allowed_tools                 Ring 5. Every tool the agent can call.
+#   broker_tools                  Ring 4. Subset of allowed_tools that
+#                                 executes inside the broker so credentials
+#                                 never enter the sandbox. Every broker tool
+#                                 must name a target declared below, and is
+#                                 gated by Ring 7 unless auto_approve
+#                                 exempts that exact operation and target.
+#   secrets_access                Ring 4. Broker policy. Declares each
+#                                 credential by name, scope, TTL, which
+#                                 broker tools consume it, and which targets
+#                                 it authorizes. Credential values live only
+#                                 in the broker.
+#   requires_human_approval       Ring 7. Structured operations against
+#                                 typed destinations that pause for approval.
+#   auto_approve                  Ring 7 escape hatch. Named exemptions from
+#                                 the credentialed-call default. Empty here.
+#                                 Every entry is a reviewed decision to let
+#                                 one operation reach one target unattended.
+#
+# License: MIT
+
+version: 1
+agent_id: agent-coding-support
+
+sandbox:
+  template: company-agent-python-hardened
+  max_runtime_seconds: 900
+  tool_timeout_seconds: 120
+  allowed_domains:
+    - api.company.com
+    - docs.internal.company.com
+    - pypi.org
+    - files.pythonhosted.org
+
+allowed_tools:
+  - read_file
+  - list_directory
+  - run_python
+  - search_documentation
+  - write_record
+  - http_post
+
+broker_tools:
+  - write_record
+  - http_post
+
+secrets_access:
+  - name: production_ticket_writer
+    scope: postgres:write:support_tickets
+    max_ttl_seconds: 300
+    tools:
+      - write_record
+    targets:
+      - prod-db
+  - name: partner_webhook_sender
+    scope: webhook:post:partner
+    max_ttl_seconds: 600
+    tools:
+      - http_post
+    targets:
+      - partner-webhook
+
+requires_human_approval:
+  - operation: write_record
+    target: prod-db
+  - operation: http_post
+    target: partner-webhook
+
+auto_approve: []
