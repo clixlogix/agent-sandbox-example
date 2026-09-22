@@ -6,6 +6,10 @@ An AI agent chooses which tools to call at runtime, driven by whatever text reac
 
 MIT licensed. Fork it, replace the two marked seams, ship it.
 
+The reasoning behind each ring, the 2026 incident record it responds to, and the
+compliance mapping are in the companion article:
+**[How To Build An AI Agent Sandbox For Production Agents With A 7 Ring Model](https://www.clixlogix.com/ai-agent-sandbox-production-security/)**
+
 ## The seven rings
 
 | Ring | Control | Where it is enforced |
